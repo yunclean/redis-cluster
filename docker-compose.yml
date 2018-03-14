@@ -9,15 +9,26 @@ services:
     volumes:
       - /data/redis_master:/data
     command: redis-server --appendonly yes
-  slave:
+  slave_1:
     image: redis:3
     ports:
       - "6379"
     environment:
       TZ: Asia/Shanghai
     volumes:
-      - /data/redis_slave:/data
-    command: redis-server --slaveof redis-master 6379
+      - /data/redis_slave_1:/data
+    command: redis-server --appendonly yes --slaveof redis-master 6379
+    links:
+      - master:redis-master
+  slave_2:
+    image: redis:3
+    ports:
+      - "6379"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/redis_slave_2:/data
+    command: redis-server --appendonly yes --slaveof redis-master 6379
     links:
       - master:redis-master
   sentinel:
@@ -30,4 +41,5 @@ services:
       TZ: Asia/Shanghai
     links:
       - master:redis-master
-      - slave
+      - slave_1
+      - slave_2
