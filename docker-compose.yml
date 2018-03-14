@@ -18,7 +18,7 @@ services:
   slave_2:
     image: redis:3
     ports:
-      - "6380:6379"
+      - "6381:6379"
     network_mode: "host"
     environment:
       TZ: Asia/Shanghai
