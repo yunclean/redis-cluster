@@ -1,13 +1,11 @@
 version: '3'
 services:
-  
   master:
     image: redis:3
     ports:
       - "6379"
     environment:
       TZ: Asia/Shanghai
-    network_mode: "host"
   slave:
     image: redis:3
     ports:
@@ -15,7 +13,8 @@ services:
     environment:
       TZ: Asia/Shanghai
     command: redis-server --slaveof redis-master 6379
-    network_mode: "host"
+    links:
+      - master:redis-master
   sentinel:
     build: sentinel
     ports:
@@ -24,4 +23,6 @@ services:
       SENTINEL_DOWN_AFTER: 5000
       SENTINEL_FAILOVER: 5000
       TZ: Asia/Shanghai
-    network_mode: "host"
+    links:
+      - master:redis-master
+      - slave
