@@ -1,15 +1,22 @@
-master:
-  image: redis:3
-slave:
-  image: redis:3
-  command: redis-server --slaveof redis-master 6379
-  links:
-    - master:redis-master
-sentinel:
-  build: sentinel
-  environment:
-    - SENTINEL_DOWN_AFTER=5000
-    - SENTINEL_FAILOVER=5000    
-  links:
-    - master:redis-master
-    - slave
+version: '3'
+services:
+  master:
+    image: redis:3
+    environment:
+      TZ: Asia/Shanghai
+  slave:
+    image: redis:3
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server --slaveof redis-master 6379
+    links:
+      - master:redis-master
+  sentinel:
+    build: sentinel
+    environment:
+      SENTINEL_DOWN_AFTER: 5000
+      SENTINEL_FAILOVER: 5000
+      TZ: Asia/Shanghai
+    links:
+      - master:redis-master
+      - slave
