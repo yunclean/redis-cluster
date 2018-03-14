@@ -16,13 +16,14 @@ services:
       TZ: Asia/Shanghai
     command: redis-server --slaveof 172.31.20.15 6380
   sentinel:
-    build: sentinel
+    build: 
+      context: sentinel
+      args:
+        HOST_IP: 172.31.20.15
+        HOST_PORT: 6380
     ports:
       - "26379"
     network_mode: "host"
-    args:
-      HOST_IP: 172.31.20.15
-      HOST_PORT: 6380
     environment:
       SENTINEL_DOWN_AFTER: 5000
       SENTINEL_FAILOVER: 5000
